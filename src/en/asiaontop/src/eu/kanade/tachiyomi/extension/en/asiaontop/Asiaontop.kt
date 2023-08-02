@@ -56,13 +56,15 @@ class Asiaontop : ParsedHttpSource() {
 
     // Search
     override fun searchMangaRequest(page: Int, query: String, filters: FilterList): Request {
-        val url = AsiaontopFilters.buildUrl(baseUrl, page, filters)
+        val filterList = if (filters.isEmpty()) getFilterList() else filters
 
-        if (url == baseUrl) {
-            return GET("$baseUrl/?s=${query.replace(' ', '+')}", headers)
+        val url = AsiaontopFilters.buildUrl(baseUrl, page, filterList)
+        if (url != baseUrl) {
+            val u = "$url/page/$page"
+            return GET(u, headers)
         } else {
-            println(url)
-            return GET(url, headers)
+            val u = "$baseUrl/page/$page/?s=${query.replace(' ', '+')}"
+            return GET(u, headers)
         }
     }
 

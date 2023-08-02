@@ -24,7 +24,6 @@ class AsiaontopFilters() {
             val byTagFilter = filter.findInstance<ByTagFilter>()!!
 
             val filterState = filterByFilter.state
-            println(filterState)
             if (filterState != 0) {
                 val url = "${baseUrl}${filterByList[filterState].second}"
 
