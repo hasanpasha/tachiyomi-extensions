@@ -20,8 +20,6 @@ class Hotgirlasia : ParsedHttpSource() {
 
     override val supportsLatest = true
 
-//    override val client: OkHttpClient = network.cloudflareClient
-
     // Popular
     override fun popularMangaRequest(page: Int): Request {
         return GET(HotgirlasiaFilters.buildPopularUrl(baseUrl), headers)
@@ -37,7 +35,7 @@ class Hotgirlasia : ParsedHttpSource() {
             thumbnail_url = element.select("img.mli-thumb").attr("src")
         }
 
-    override fun popularMangaNextPageSelector() = "div.exxx" // There is not next page
+    override fun popularMangaNextPageSelector() = "div.exxx" // There is no next page
 
     // Latest
     override fun latestUpdatesRequest(page: Int): Request =
@@ -57,11 +55,9 @@ class Hotgirlasia : ParsedHttpSource() {
         val filterList = if (filters.isEmpty()) getFilterList() else filters
 
         return if (query.isBlank()) {
-            val url = HotgirlasiaFilters.buildSearchUrl(baseUrl, filterList)
-            GET(url, headers)
+            GET(HotgirlasiaFilters.buildSearchUrl(baseUrl, page, filterList), headers)
         } else {
-            val url = "$baseUrl/page/$page/?s=${query.replace(' ', '+')}"
-            GET(url, headers)
+            GET("$baseUrl/page/$page/?s=${query.replace(' ', '+')}", headers)
         }
     }
 
@@ -80,7 +76,7 @@ class Hotgirlasia : ParsedHttpSource() {
             title = document.select("h3[itemprop=name]").text()
             description = document.select("div.mvic-info").text().trim()
             genre = document.select("div#mv-keywords a[rel=tag]").joinToString { it.text() }
-            status = SManga.UNKNOWN
+            status = SManga.COMPLETED
             thumbnail_url = document.select("div.thumb.mvic-thumb img").attr("src")
         }
 

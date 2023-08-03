@@ -10,18 +10,18 @@ class HotgirlasiaFilters() {
 
         fun getFilterList() = FilterList(
             PopularFilter(),
+            Filter.Header("Popularity has the least priority"),
             Filter.Separator(),
-            Filter.Header("Tag has the priority"),
-            ByTagFilter(),
-            BySpecialTags(),
             ByCountryFilter(),
+            BySpecialTags(),
+            ByTagFilter(),
         )
 
         fun buildPopularUrl(baseUrl: String): String {
             return "$baseUrl/${popularFilterList.first().second}"
         }
 
-        fun buildSearchUrl(baseUrl: String, filter: FilterList): String {
+        fun buildSearchUrl(baseUrl: String, page: Int, filter: FilterList): String {
             val popularFilter = filter.findInstance<PopularFilter>()!!
             val tagFilter = filter.findInstance<ByTagFilter>()!!
             val byCountryFilter = filter.findInstance<ByCountryFilter>()!!
@@ -32,21 +32,21 @@ class HotgirlasiaFilters() {
             val country = byCountryFilter.state
             val specialTag = bySpecialTags.state
 
-            return if (tag.isNotBlank()) {
-                "$baseUrl/tag/${tag.replace(' ', '-')}"
-            } else if (byCountryList[country].second.isNotBlank()) {
-                "$baseUrl/${byCountryList[country].second}"
+            return if (byCountryList[country].second.isNotBlank()) {
+                "$baseUrl/${byCountryList[country].second}/page/$page"
             } else if (specialTagsList[specialTag].second.isNotBlank()) {
-                "${baseUrl}${specialTagsList[specialTag].second}"
+                "${baseUrl}${specialTagsList[specialTag].second}/page/$page"
+            } else if (tag.isNotBlank()) {
+                "$baseUrl/tag/${tag.replace(' ', '-')}"
             } else {
-                "$baseUrl/${popularFilterList[popular].second}"
+                "$baseUrl/${popularFilterList[popular].second}/page/$page"
             }
         }
 
         private val popularFilterList = arrayOf<Pair<String, String>>(
             Pair("Top Week", "top-week-viewed"),
-            Pair("Top Month", "top-month-viewed/"),
-            Pair("Top Year", "top-year-viewed/"),
+            Pair("Top Month", "top-month-viewed"),
+            Pair("Top Year", "top-year-viewed"),
         )
 
         private class PopularFilter(
@@ -69,11 +69,10 @@ class HotgirlasiaFilters() {
         private class ByTagFilter() : Filter.Text("Tag")
 
         private val specialTagsList = arrayOf(
-            Pair("Korean Generes", ""),
-            Pair("Korean idols", "/genre/korea/korean-idols/"),
-            Pair("Korean Models", "/genre/korea/korean-models/"),
-            Pair("----------", ""),
-            Pair("XIUREN", "/tag/xiuren/"),
+            Pair("", ""),
+            Pair("Korean idols", "/genre/korea/korean-idols"),
+            Pair("Korean Models", "/genre/korea/korean-models"),
+            Pair("XIUREN", "/tag/xiuren"),
             Pair("FEILIN", "/tag/feilin"),
             Pair("HUAYAN", "/tag/huayan"),
             Pair("LEYUAN", "/tag/leyuan"),
@@ -89,11 +88,11 @@ class HotgirlasiaFilters() {
             Pair("CANDY", "/tag/candy"),
             Pair("MiStar", "/tag/mistar"),
             Pair("YouWu", "/tag/youwu尤物馆/"),
-            Pair("Beauty Leg", "/genre/taiwan-hongkong-beauty/"),
-            Pair("Beauty Photo", "/tag/chinese-beauty-photo/"),
-            Pair("Big Chest", "/tag/big-chest-photo/"),
-            Pair("Underwear", "/tag/underwear-beauty-photo/"),
-            Pair("Cosplay", "/tag/cosplay-photo/"),
+            Pair("Beauty Leg", "/genre/taiwan-hongkong-beauty"),
+            Pair("Beauty Photo", "/tag/chinese-beauty-photo"),
+            Pair("Big Chest", "/tag/big-chest-photo"),
+            Pair("Underwear", "/tag/underwear-beauty-photo"),
+            Pair("Cosplay", "/tag/cosplay-photo"),
             Pair("Maid Photo", "/tag/maid-photo"),
         )
 
